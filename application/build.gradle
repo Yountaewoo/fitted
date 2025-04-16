@@ -1,0 +1,17 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+dependencies {
+    // 웹(컨트롤러) 관련 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // 각 모듈 간 의존성 연결 (필요에 따라 의존성 순서를 조정)
+    implementation project(':common')
+    implementation project(':domain')
+    implementation project(':web')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

@@ -1,0 +1,16 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+dependencies {
+    // 서비스 계층에서는 도메인 계층 기능과 공통 기능을 활용하므로 의존성 추가
+    implementation project(':domain')
+    implementation project(':common')
+
+    // 기본적인 Spring 기능(예: 트랜잭션, 컴포넌트 스캔 등)이 필요하면
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // 추가적인 서비스 관련 라이브러리가 있다면 여기에 추가
+}

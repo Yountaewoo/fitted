@@ -1,0 +1,19 @@
+plugins {
+	id 'org.springframework.boot' version '3.4.4' apply false
+	id 'io.spring.dependency-management' version '1.1.0' apply false
+}
+
+allprojects {
+	group = 'com.fitted'
+	version = '0.0.1-SNAPSHOT'
+	repositories {
+		mavenCentral()
+	}
+}
+
+subprojects {
+	// 공통 Java 설정. 서브 모듈마다 Java 버전을 설정합니다.
+	apply plugin: 'java'
+	sourceCompatibility = '17'
+	targetCompatibility = '17'
+}

@@ -1,0 +1,6 @@
+rootProject.name = 'fitted'
+include 'application', 'common', 'domain', 'web'
+include 'common'
+include 'domain'
+include 'web'
+

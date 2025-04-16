@@ -1,0 +1,13 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+dependencies {
+    // 필요에 따라 Lombok(보일러플레이트 코드 감소)를 사용한다면:
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    // 추가적인 공통 라이브러리(예: 로깅, 유틸 등)가 있다면 여기에 추가
+}
