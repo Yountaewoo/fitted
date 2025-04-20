@@ -17,3 +17,4 @@ subprojects {
 	sourceCompatibility = '17'
 	targetCompatibility = '17'
 }
+

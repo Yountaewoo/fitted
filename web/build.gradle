@@ -11,6 +11,7 @@ dependencies {
 
     // 기본적인 Spring 기능(예: 트랜잭션, 컴포넌트 스캔 등)이 필요하면
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // 추가적인 서비스 관련 라이브러리가 있다면 여기에 추가
 }
