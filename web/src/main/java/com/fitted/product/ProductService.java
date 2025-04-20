@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ProductService {
@@ -32,23 +33,22 @@ public class ProductService {
                 request.imageUrl()));
     }
 
-    private List<ProductOptionResponse> createProductOptions(ProductRequest request, Product product) {
-        List<ProductOptionResponse> productOptionResponses = new ArrayList<>();
-        for (ProductOptionRequest productOptionRequest : request.productOptionRequests()) {
-            ProductOption productOption = productOptionRepository.save(
-                    new ProductOption(
-                            product.getId(),
-                            productOptionRequest.size(),
-                            productOptionRequest.productCount()));
-            productOptionResponses.add(new ProductOptionResponse(
-                    productOption.getId(),
-                    productOption.getSize(),
-                    productOption.getProductCount()));
-        }
-        return productOptionResponses;
+    private List<ProductOption> createProductOptions(ProductRequest request, Product product) {
+        return request.productOptionRequests().stream()
+                .map(productOptionRequest -> new ProductOption(
+                        product.getId(),
+                        productOptionRequest.size(),
+                        productOptionRequest.productCount()))
+                .toList();
     }
 
-    private ProductDetailResponse assembleResponse(Product product, List<ProductOptionResponse> responses) {
+    private ProductDetailResponse assembleResponse(Product product, List<ProductOption> productOptionList) {
+        List<ProductOptionResponse> productOptionResponses = productOptionList.stream()
+                .map(productOption -> new ProductOptionResponse(
+                        productOption.getId(),
+                        productOption.getSize(),
+                        productOption.getProductCount()))
+                .toList();
         return new ProductDetailResponse(
                 product.getId(),
                 product.getName(),
@@ -57,15 +57,21 @@ public class ProductService {
                 product.getDescription(),
                 product.getImageUrl(),
                 product.isActive(),
-                responses
+                productOptionResponses
         );
     }
-
 
     @Transactional
     public ProductDetailResponse create(ProductRequest request) {
         Product product = createProductEntity(request);
-        List<ProductOptionResponse> responses = createProductOptions(request, product);
-        return assembleResponse(product, responses);
+        List<ProductOption> productOptions = productOptionRepository.saveAll(createProductOptions(request, product));
+        return assembleResponse(product, productOptions);
+    }
+
+    public ProductDetailResponse findById(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 상품이 없습니다."));
+        List<ProductOption> productOptionList = productOptionRepository.findAllByProductId(productId);
+        return assembleResponse(product, productOptionList);
     }
 }
