@@ -74,4 +74,13 @@ public class ProductService {
         List<ProductOption> productOptionList = productOptionRepository.findAllByProductId(productId);
         return assembleResponse(product, productOptionList);
     }
+
+    @Transactional
+    public void deleteById(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new NoSuchElementException("해당하는 상품이 없습니다.");
+        }
+        productOptionRepository.deleteAllByProductId(productId);
+        productRepository.deleteById(productId);
+    }
 }

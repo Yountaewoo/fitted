@@ -22,4 +22,9 @@ public class ProductRestController {
     public ProductDetailResponse findById(@PathVariable Long productId) {
         return productService.findById(productId);
     }
+
+    @DeleteMapping("products/{productId}")
+    public void deleteById(@PathVariable Long productId) {
+        productService.deleteById(productId);
+    }
 }
