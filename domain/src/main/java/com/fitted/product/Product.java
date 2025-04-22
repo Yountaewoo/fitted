@@ -1,11 +1,12 @@
 package com.fitted.product;
 
+import com.fitted.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
 @Entity
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +36,5 @@ public class Product {
         this.category = category;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.active = active;
     }
 }

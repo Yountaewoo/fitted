@@ -4,12 +4,10 @@ import com.fitted.product.dto.ProductDetailResponse;
 import com.fitted.product.dto.ProductRequest;
 import com.fitted.productOption.ProductOption;
 import com.fitted.productOption.ProductOptionRepository;
-import com.fitted.productOption.dto.ProductOptionRequest;
 import com.fitted.productOption.dto.ProductOptionResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 

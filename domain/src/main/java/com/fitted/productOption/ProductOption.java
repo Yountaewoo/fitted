@@ -1,11 +1,12 @@
 package com.fitted.productOption;
 
+import com.fitted.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
 @Entity
-public class ProductOption {
+public class ProductOption extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
