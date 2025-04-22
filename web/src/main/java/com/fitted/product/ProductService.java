@@ -23,15 +23,15 @@ public class ProductService {
     }
 
     private Product createProductEntity(ProductRequest request) {
-        return productRepository.save(new Product(
+        return new Product(
                 request.name(),
                 request.price(),
                 request.category(),
                 request.description(),
-                request.imageUrl()));
+                request.imageUrl());
     }
 
-    private List<ProductOption> createProductOptions(ProductRequest request, Product product) {
+    private List<ProductOption> createProductOptionsEntity(ProductRequest request, Product product) {
         return request.productOptionRequests().stream()
                 .map(productOptionRequest -> new ProductOption(
                         product.getId(),
@@ -62,8 +62,10 @@ public class ProductService {
     @Transactional
     public ProductDetailResponse create(ProductRequest request) {
         Product product = createProductEntity(request);
-        List<ProductOption> productOptions = productOptionRepository.saveAll(createProductOptions(request, product));
-        return assembleResponse(product, productOptions);
+        Product saveProduct = productRepository.save(product);
+        List<ProductOption> productOptions = createProductOptionsEntity(request, product);
+        List<ProductOption> saveProductOptions = productOptionRepository.saveAll(productOptions);
+        return assembleResponse(saveProduct, saveProductOptions);
     }
 
     public ProductDetailResponse findById(Long productId) {
