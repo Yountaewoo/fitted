@@ -1,7 +1,9 @@
 package com.fitted.product;
 
+import com.fitted.product.dto.ProductListResponse;
 import com.fitted.product.dto.ProductDetailResponse;
 import com.fitted.product.dto.ProductRequest;
+import com.fitted.product.dto.ProductResponse;
 import com.fitted.productOption.ProductOption;
 import com.fitted.productOption.ProductOptionRepository;
 import com.fitted.productOption.dto.ProductOptionResponse;
@@ -16,10 +18,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final ProductQueryRepository productQueryRepository;
 
-    public ProductService(ProductRepository productRepository, ProductOptionRepository productOptionRepository) {
+    public ProductService(ProductRepository productRepository, ProductOptionRepository productOptionRepository, ProductQueryRepository productQueryRepository) {
         this.productRepository = productRepository;
         this.productOptionRepository = productOptionRepository;
+        this.productQueryRepository = productQueryRepository;
     }
 
     private Product createProductEntity(ProductRequest request) {
@@ -59,6 +63,19 @@ public class ProductService {
         );
     }
 
+    private ProductListResponse fetchProductListResponse(List<Product> products) {
+        return new ProductListResponse(products.stream()
+                .map(product -> new ProductResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getCategory(),
+                        product.getDescription(),
+                        product.getImageUrl(),
+                        product.isActive()))
+                .toList());
+    }
+
     @Transactional
     public ProductDetailResponse create(ProductRequest request) {
         Product product = createProductEntity(request);
@@ -82,5 +99,10 @@ public class ProductService {
         }
         productOptionRepository.deleteAllByProductId(productId);
         productRepository.deleteById(productId);
+    }
+
+    public ProductListResponse searchBy(String name, String category) {
+        List<Product> products = productQueryRepository.findAll(name, category);
+        return fetchProductListResponse(products);
     }
 }

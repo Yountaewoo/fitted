@@ -1,5 +1,6 @@
 package com.fitted.product;
 
+import com.fitted.product.dto.ProductListResponse;
 import com.fitted.product.dto.ProductDetailResponse;
 import com.fitted.product.dto.ProductRequest;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,18 @@ public class ProductRestController {
         return productService.create(request);
     }
 
-    @GetMapping("products/{productId}")
+    @GetMapping("/products/{productId}")
     public ProductDetailResponse findById(@PathVariable Long productId) {
         return productService.findById(productId);
     }
 
-    @DeleteMapping("products/{productId}")
+    @DeleteMapping("/products/{productId}")
     public void deleteById(@PathVariable Long productId) {
         productService.deleteById(productId);
     }
-    
+
+    @GetMapping("/products")
+    public ProductListResponse getAll(@RequestParam String name, @RequestParam String category) {
+        return productService.searchBy(name, category);
+    }
 }
