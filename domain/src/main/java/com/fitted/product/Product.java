@@ -37,4 +37,8 @@ public class Product extends BaseEntity {
         this.description = description;
         this.imageUrl = imageUrl;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -27,4 +27,8 @@ public class ProductOption extends BaseEntity {
         this.size = size;
         this.productCount = productCount;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

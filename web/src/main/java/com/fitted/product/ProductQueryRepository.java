@@ -19,7 +19,7 @@ public class ProductQueryRepository {
         this.queryFactory = queryFactory;
     }
 
-    List<Product> findAll(String productName, String category) {
+    public List<Product> findAll(String productName, String category) {
         return queryFactory
                 .selectFrom(product)
                 .where(
@@ -29,14 +29,14 @@ public class ProductQueryRepository {
                 .fetch();
     }
 
-    private BooleanExpression findByProductName(String productName) {
+    public BooleanExpression findByProductName(String productName) {
         if (productName == null) {
             return null;
         }
         return product.name.contains(productName);
     }
 
-    private BooleanExpression findByCategory(String categoryName) {
+    public BooleanExpression findByCategory(String categoryName) {
         if (categoryName == null) {
             return null;
         }
