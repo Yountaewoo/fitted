@@ -104,4 +104,15 @@ public class OrderService {
                 .toList();
         return new OrderListResponse(summaries);
     }
+
+    public OrderResponse findByOrderId(String supabaseId, Long orderId) {
+        Users users = authorizationService.checkCustomer(supabaseId);
+        Order order = ordersRepository.findById(orderId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 주문이 없습니다."));
+        if (!order.getUserId().equals(users.getId())) {
+            throw new IllegalArgumentException("주문한 사용자와 일치하지 않습니다.");
+        }
+        List<OrderDetailResponse> orderDetailResponses = mapOrderDetailsToResponseList(order);
+        return mapToOrderResponse(order, orderDetailResponses);
+    }
 }

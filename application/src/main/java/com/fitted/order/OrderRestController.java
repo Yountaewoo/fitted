@@ -5,10 +5,7 @@ import com.fitted.order.dto.OrderRequest;
 import com.fitted.order.dto.OrderResponse;
 import com.fitted.order.dto.OrderListResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,8 +18,13 @@ public class OrderRestController {
         return orderService.create(supabaseId, request);
     }
 
-    @GetMapping("orders")
+    @GetMapping("/orders")
     public OrderListResponse getAll(@LoginMemberId String supabaseId) {
         return orderService.getAll(supabaseId);
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public OrderResponse findByOrderId(@LoginMemberId String supabaseId, @PathVariable Long orderId) {
+        return orderService.findByOrderId(supabaseId, orderId);
     }
 }
