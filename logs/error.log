@@ -116,12 +116,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in com.fitted.orders.OrderRestController required a bean of type 'com.orders.OrderService' that could not be found.
+Parameter 0 of constructor in com.fitted.order.OrderRestController required a bean of type 'com.order.OrderService' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'com.orders.OrderService' in your configuration.
+Consider defining a bean of type 'com.order.OrderService' in your configuration.
 
 12:17:57.473 [main] ERROR o.s.boot.SpringApplication - Application run failed
 org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'authenticationConfig' defined in URL [jar:file:/C:/Users/tty77/Desktop/Fitted/fitted/web/build/libs/web-0.0.1-SNAPSHOT-plain.jar!/com/fitted/AuthenticationConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'loginMemberResolver' defined in URL [jar:file:/C:/Users/tty77/Desktop/Fitted/fitted/web/build/libs/web-0.0.1-SNAPSHOT-plain.jar!/com/fitted/LoginMemberResolver.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'jwtProvider' defined in URL [jar:file:/C:/Users/tty77/Desktop/Fitted/fitted/common/build/libs/common-0.0.1-SNAPSHOT-plain.jar!/com/fitted/loginUtils/JwtProvider.class]: Unexpected exception during bean creation
