@@ -1,5 +1,6 @@
 package com.fitted.product;
 
+import com.fitted.loginUtils.LoginMemberId;
 import com.fitted.product.dto.ProductListResponse;
 import com.fitted.product.dto.ProductDetailResponse;
 import com.fitted.product.dto.ProductRequest;
@@ -15,8 +16,8 @@ public class ProductRestController {
     }
 
     @PostMapping("/products")
-    public ProductDetailResponse create(@RequestBody ProductRequest request) {
-        return productService.create(request);
+    public ProductDetailResponse create(@LoginMemberId String supabaseId, @RequestBody ProductRequest request) {
+        return productService.create(supabaseId, request);
     }
 
     @GetMapping("/products/{productId}")
@@ -25,8 +26,8 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/products/{productId}")
-    public void deleteById(@PathVariable Long productId) {
-        productService.deleteById(productId);
+    public void deleteById(@LoginMemberId String supabaseId, @PathVariable Long productId) {
+        productService.deleteById(supabaseId, productId);
     }
 
     @GetMapping("/products")

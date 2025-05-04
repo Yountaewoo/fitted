@@ -7,24 +7,24 @@ import com.fitted.product.dto.ProductResponse;
 import com.fitted.productOption.ProductOption;
 import com.fitted.productOption.ProductOptionRepository;
 import com.fitted.productOption.dto.ProductOptionResponse;
+import com.fitted.user.Role;
+import com.fitted.user.User;
+import com.fitted.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductQueryRepository productQueryRepository;
-
-    public ProductService(ProductRepository productRepository, ProductOptionRepository productOptionRepository, ProductQueryRepository productQueryRepository) {
-        this.productRepository = productRepository;
-        this.productOptionRepository = productOptionRepository;
-        this.productQueryRepository = productQueryRepository;
-    }
+    private final UserRepository userRepository;
 
     private Product createProductEntity(ProductRequest request) {
         return new Product(
@@ -76,8 +76,18 @@ public class ProductService {
                 .toList());
     }
 
+    private User checkRole(String supabaseId) {
+        User user = userRepository.findBySupabaseId(supabaseId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 사용자가 없습니다."));
+        if (user.getRole() != Role.ADMIN) {
+            throw new IllegalStateException("관리자가 아닙니다.");
+        }
+        return user;
+    }
+
     @Transactional
-    public ProductDetailResponse create(ProductRequest request) {
+    public ProductDetailResponse create(String supabaseId, ProductRequest request) {
+        checkRole(supabaseId);
         Product product = createProductEntity(request);
         Product saveProduct = productRepository.save(product);
         List<ProductOption> productOptions = createProductOptionsEntity(request, product);
@@ -93,7 +103,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteById(Long productId) {
+    public void deleteById(String supabaseId, Long productId) {
+        checkRole(supabaseId);
         if (!productRepository.existsById(productId)) {
             throw new NoSuchElementException("해당하는 상품이 없습니다.");
         }
