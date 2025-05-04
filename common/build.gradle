@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
     id 'java'
+    id 'java-library'
 }
 
 dependencies {
@@ -10,4 +11,15 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
     // 추가적인 공통 라이브러리(예: 로깅, 유틸 등)가 있다면 여기에 추가
+    // Spring MVC argument resolver, @Configuration 등 사용을 위해
+    api 'org.springframework:spring-context'
+    api 'org.springframework:spring-web'
+
+    // JWT 처리용
+    api 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // 로깅
+    api 'org.slf4j:slf4j-api'
 }
