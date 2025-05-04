@@ -2,11 +2,10 @@ package com.fitted.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Entity
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +23,10 @@ public class User {
 
     private Role role;
 
-    protected User() {
+    protected Users() {
     }
 
-    public User(String supabaseId, String password, String email, String name) {
+    public Users(String supabaseId, String password, String email, String name) {
         this.supabaseId = supabaseId;
         this.password = password;
         this.email = email;

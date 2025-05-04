@@ -1,6 +1,8 @@
-package com.fitted.loginUtils;
+package com.fitted;
 
 
+import com.fitted.loginUtils.JwtProvider;
+import com.fitted.loginUtils.LoginMemberId;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

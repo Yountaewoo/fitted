@@ -1,4 +1,4 @@
-package com.fitted.loginUtils;
+package com.fitted;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
