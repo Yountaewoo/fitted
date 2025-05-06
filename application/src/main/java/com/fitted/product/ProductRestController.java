@@ -1,8 +1,10 @@
 package com.fitted.product;
 
+import com.fitted.loginUtils.LoginMemberId;
 import com.fitted.product.dto.ProductListResponse;
 import com.fitted.product.dto.ProductDetailResponse;
 import com.fitted.product.dto.ProductRequest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +17,9 @@ public class ProductRestController {
     }
 
     @PostMapping("/products")
-    public ProductDetailResponse create(@RequestBody ProductRequest request) {
-        return productService.create(request);
+    public ProductDetailResponse create(@LoginMemberId String supabaseId,
+                                        @RequestBody ProductRequest request) {
+        return productService.create(supabaseId, request);
     }
 
     @GetMapping("/products/{productId}")
@@ -25,12 +28,19 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/products/{productId}")
-    public void deleteById(@PathVariable Long productId) {
-        productService.deleteById(productId);
+    public void deleteById(@LoginMemberId String supabaseId,
+                           @PathVariable Long productId) {
+        productService.deleteById(supabaseId, productId);
     }
 
     @GetMapping("/products")
-    public ProductListResponse getAll(@RequestParam String name, @RequestParam String category) {
-        return productService.searchBy(name, category);
+    public ProductListResponse getAll(@RequestParam(required = false) String name,
+                                      @RequestParam(required = false) String category,
+                                      @RequestParam(required = false) SortType sortType,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "20") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return productService.searchBy(name, category, sortType, pageRequest);
     }
 }

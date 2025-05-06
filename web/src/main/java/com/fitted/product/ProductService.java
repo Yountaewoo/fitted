@@ -7,24 +7,23 @@ import com.fitted.product.dto.ProductResponse;
 import com.fitted.productOption.ProductOption;
 import com.fitted.productOption.ProductOptionRepository;
 import com.fitted.productOption.dto.ProductOptionResponse;
+import com.fitted.security.AuthorizationService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductQueryRepository productQueryRepository;
-
-    public ProductService(ProductRepository productRepository, ProductOptionRepository productOptionRepository, ProductQueryRepository productQueryRepository) {
-        this.productRepository = productRepository;
-        this.productOptionRepository = productOptionRepository;
-        this.productQueryRepository = productQueryRepository;
-    }
+    private final AuthorizationService authorizationService;
 
     private Product createProductEntity(ProductRequest request) {
         return new Product(
@@ -49,7 +48,7 @@ public class ProductService {
                 .map(productOption -> new ProductOptionResponse(
                         productOption.getId(),
                         productOption.getSize(),
-                        productOption.getProductCount()))
+                        productOption.getStock()))
                 .toList();
         return new ProductDetailResponse(
                 product.getId(),
@@ -77,7 +76,8 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDetailResponse create(ProductRequest request) {
+    public ProductDetailResponse create(String supabaseId, ProductRequest request) {
+        authorizationService.checkAdmin(supabaseId);
         Product product = createProductEntity(request);
         Product saveProduct = productRepository.save(product);
         List<ProductOption> productOptions = createProductOptionsEntity(request, product);
@@ -93,7 +93,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteById(Long productId) {
+    public void deleteById(String supabaseId, Long productId) {
+        authorizationService.checkAdmin(supabaseId);
         if (!productRepository.existsById(productId)) {
             throw new NoSuchElementException("해당하는 상품이 없습니다.");
         }
@@ -101,8 +102,8 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public ProductListResponse searchBy(String name, String category) {
-        List<Product> products = productQueryRepository.findAll(name, category);
+    public ProductListResponse searchBy(String name, String category, SortType sortType, PageRequest pageRequest) {
+        List<Product> products = productQueryRepository.findAll(name, category, sortType, pageRequest);
         return fetchProductListResponse(products);
     }
 }

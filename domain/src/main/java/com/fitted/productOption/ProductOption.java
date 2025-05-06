@@ -3,7 +3,9 @@ package com.fitted.productOption;
 import com.fitted.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Getter
 @Entity
 public class ProductOption extends BaseEntity {
@@ -17,15 +19,12 @@ public class ProductOption extends BaseEntity {
 
     private int size;
 
-    private int productCount;
+    private int stock;
 
-    protected ProductOption() {
-    }
-
-    public ProductOption(Long productId, int size, int productCount) {
+    public ProductOption(Long productId, int size, int stock) {
         this.productId = productId;
         this.size = size;
-        this.productCount = productCount;
+        this.stock = stock;
     }
 
     public void setId(Long id) {
