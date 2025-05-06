@@ -16,7 +16,8 @@ public class ProductRestController {
     }
 
     @PostMapping("/products")
-    public ProductDetailResponse create(@LoginMemberId String supabaseId, @RequestBody ProductRequest request) {
+    public ProductDetailResponse create(@LoginMemberId String supabaseId,
+                                        @RequestBody ProductRequest request) {
         return productService.create(supabaseId, request);
     }
 
@@ -26,12 +27,14 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/products/{productId}")
-    public void deleteById(@LoginMemberId String supabaseId, @PathVariable Long productId) {
+    public void deleteById(@LoginMemberId String supabaseId,
+                           @PathVariable Long productId) {
         productService.deleteById(supabaseId, productId);
     }
 
     @GetMapping("/products")
-    public ProductListResponse getAll(@RequestParam String name, @RequestParam String category) {
+    public ProductListResponse getAll(@RequestParam(required = false) String name,
+                                      @RequestParam(required = false) String category) {
         return productService.searchBy(name, category);
     }
 }

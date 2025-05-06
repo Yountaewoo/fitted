@@ -13,12 +13,11 @@ import com.fitted.product.ProductRepository;
 import com.fitted.productOption.ProductOption;
 import com.fitted.productOption.ProductOptionRepository;
 import com.fitted.security.AuthorizationService;
-import com.fitted.user.Users;
+import com.fitted.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -32,9 +31,9 @@ public class OrderService {
     private final ProductOptionRepository productOptionRepository;
     private final AuthorizationService authorizationService;
 
-    private Order createOrder(Users users, OrderRequest orderRequest) {
+    private Order createOrder(User user, OrderRequest orderRequest) {
         return ordersRepository.save(new Order(
-                users.getId(),
+                user.getId(),
                 orderRequest.address()
         ));
     }
@@ -83,8 +82,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(String supabaseId, OrderRequest orderRequest) {
-        Users users = authorizationService.checkCustomer(supabaseId);
-        Order order = createOrder(users, orderRequest);
+        User user = authorizationService.checkCustomer(supabaseId);
+        Order order = createOrder(user, orderRequest);
         for (OrderDetailRequest orderDetailRequest : orderRequest.requests()) {
             ProductOption productOption = getProductOptionById(orderDetailRequest);
             Product product = getProductByOption(productOption);
@@ -96,9 +95,9 @@ public class OrderService {
     }
 
     public OrderListResponse getAll(String supabaseId) {
-        Users users = authorizationService.checkCustomer(supabaseId);
+        User user = authorizationService.checkCustomer(supabaseId);
         List<OrderSummaryResponse> summaries = ordersRepository
-                .findAllByUserId(users.getId())
+                .findAllByUserId(user.getId())
                 .stream()
                 .map(this::mapToOrderSummaryResponse)
                 .toList();
@@ -106,10 +105,10 @@ public class OrderService {
     }
 
     public OrderResponse findByOrderId(String supabaseId, Long orderId) {
-        Users users = authorizationService.checkCustomer(supabaseId);
+        User user = authorizationService.checkCustomer(supabaseId);
         Order order = ordersRepository.findById(orderId).orElseThrow(
                 () -> new NoSuchElementException("해당하는 주문이 없습니다."));
-        if (!order.getUserId().equals(users.getId())) {
+        if (!order.getUserId().equals(user.getId())) {
             throw new IllegalArgumentException("주문한 사용자와 일치하지 않습니다.");
         }
         List<OrderDetailResponse> orderDetailResponses = mapOrderDetailsToResponseList(order);

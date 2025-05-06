@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
+@Table(name = "users")
 @Entity
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +24,10 @@ public class Users {
 
     private Role role;
 
-    protected Users() {
+    protected User() {
     }
 
-    public Users(String supabaseId, String password, String email, String name) {
+    public User(String supabaseId, String password, String email, String name) {
         this.supabaseId = supabaseId;
         this.password = password;
         this.email = email;
