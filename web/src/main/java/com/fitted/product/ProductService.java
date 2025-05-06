@@ -9,6 +9,7 @@ import com.fitted.productOption.ProductOptionRepository;
 import com.fitted.productOption.dto.ProductOptionResponse;
 import com.fitted.security.AuthorizationService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -101,8 +102,8 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public ProductListResponse searchBy(String name, String category) {
-        List<Product> products = productQueryRepository.findAll(name, category);
+    public ProductListResponse searchBy(String name, String category, SortType sortType, PageRequest pageRequest) {
+        List<Product> products = productQueryRepository.findAll(name, category, sortType, pageRequest);
         return fetchProductListResponse(products);
     }
 }
