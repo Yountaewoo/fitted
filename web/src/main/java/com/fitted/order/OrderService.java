@@ -30,6 +30,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AuthorizationService authorizationService;
+    private final OrderNotificationService orderNotificationService;
 
     private Order createOrder(User user, OrderRequest orderRequest) {
         return ordersRepository.save(new Order(
@@ -82,8 +83,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(String supabaseId, OrderRequest orderRequest) {
-        User user = authorizationService.checkCustomer(supabaseId);
-        Order order = createOrder(user, orderRequest);
+        User customer = authorizationService.checkCustomer(supabaseId);
+        Order order = createOrder(customer, orderRequest);
         for (OrderDetailRequest orderDetailRequest : orderRequest.requests()) {
             ProductOption productOption = getProductOptionById(orderDetailRequest);
             Product product = getProductByOption(productOption);
@@ -91,13 +92,14 @@ public class OrderService {
             order.sumTotalPrice(orderDetailRequest.productCount() * product.getPrice());
         }
         List<OrderDetailResponse> orderDetailResponses = mapOrderDetailsToResponseList(order);
+        orderNotificationService.notifyOrderCreated(order);
         return mapToOrderResponse(order, orderDetailResponses);
     }
 
     public OrderListResponse getAll(String supabaseId) {
-        User user = authorizationService.checkCustomer(supabaseId);
+        User customer = authorizationService.checkCustomer(supabaseId);
         List<OrderSummaryResponse> summaries = ordersRepository
-                .findAllByUserId(user.getId())
+                .findAllByUserId(customer.getId())
                 .stream()
                 .map(this::mapToOrderSummaryResponse)
                 .toList();
@@ -105,13 +107,21 @@ public class OrderService {
     }
 
     public OrderResponse findByOrderId(String supabaseId, Long orderId) {
-        User user = authorizationService.checkCustomer(supabaseId);
+        User customer = authorizationService.checkCustomer(supabaseId);
         Order order = ordersRepository.findById(orderId).orElseThrow(
                 () -> new NoSuchElementException("해당하는 주문이 없습니다."));
-        if (!order.getUserId().equals(user.getId())) {
+        if (!order.getUserId().equals(customer.getId())) {
             throw new IllegalArgumentException("주문한 사용자와 일치하지 않습니다.");
         }
         List<OrderDetailResponse> orderDetailResponses = mapOrderDetailsToResponseList(order);
         return mapToOrderResponse(order, orderDetailResponses);
+    }
+
+    @Transactional
+    public void changeOrderStatus(String supabaseId, Long orderId) {
+        User admin = authorizationService.checkAdmin(supabaseId);
+        Order order = ordersRepository.findById(orderId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 주문이 없습니다."));
+        order.changeOrderStatusToPaid();
     }
 }

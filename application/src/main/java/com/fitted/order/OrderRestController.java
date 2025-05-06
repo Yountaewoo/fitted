@@ -27,4 +27,9 @@ public class OrderRestController {
     public OrderResponse findByOrderId(@LoginMemberId String supabaseId, @PathVariable Long orderId) {
         return orderService.findByOrderId(supabaseId, orderId);
     }
+
+    @PutMapping("/orders/{orderId}")
+    public void changeOrderStatus(@LoginMemberId String supabaseId, @PathVariable Long orderId) {
+        orderService.changeOrderStatus(supabaseId, orderId);
+    }
 }

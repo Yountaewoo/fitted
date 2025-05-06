@@ -21,6 +21,14 @@ public class Order {
 
     private int totalPrice;
 
+    private OrderStatus orderStatus = OrderStatus.CREATED;
+
+    public Order(Long userId, String address, int totalPrice) {
+        this.userId = userId;
+        this.address = address;
+        this.totalPrice = totalPrice;
+    }
+
     public Order(Long userId, String address) {
         this.userId = userId;
         this.address = address;
@@ -28,5 +36,9 @@ public class Order {
 
     public void sumTotalPrice(int price) {
         this.totalPrice = totalPrice + price;
+    }
+
+    public void changeOrderStatusToPaid() {
+        this.orderStatus = OrderStatus.PAID;
     }
 }
