@@ -73,4 +73,15 @@ public class ProductQueryRepository {
                 return product.createdAt.asc();
         }
     }
+
+    public Long totalCount(String productName, String category) {
+        Long totalCount = queryFactory.select(product.count())
+                .from(product)
+                .where(
+                        findByCategory(category),
+                        findByProductName(productName)
+                )
+                .fetchOne();
+        return totalCount != null ? totalCount : 0L;
+    }
 }

@@ -62,8 +62,8 @@ public class ProductService {
         );
     }
 
-    private ProductListResponse fetchProductListResponse(List<Product> products) {
-        return new ProductListResponse(products.stream()
+    private ProductListResponse fetchProductListResponse(List<Product> products, Long totalCount) {
+        List<ProductResponse> productResponses = products.stream()
                 .map(product -> new ProductResponse(
                         product.getId(),
                         product.getName(),
@@ -72,7 +72,8 @@ public class ProductService {
                         product.getDescription(),
                         product.getImageUrl(),
                         product.isActive()))
-                .toList());
+                .toList();
+        return new ProductListResponse(productResponses, totalCount);
     }
 
     @Transactional
@@ -104,6 +105,7 @@ public class ProductService {
 
     public ProductListResponse searchBy(String name, String category, SortType sortType, PageRequest pageRequest) {
         List<Product> products = productQueryRepository.findAll(name, category, sortType, pageRequest);
-        return fetchProductListResponse(products);
+        Long totalCount = productQueryRepository.totalCount(name, category);
+        return fetchProductListResponse(products, totalCount);
     }
 }
