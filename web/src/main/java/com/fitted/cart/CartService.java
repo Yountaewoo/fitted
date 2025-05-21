@@ -1,5 +1,6 @@
 package com.fitted.cart;
 
+import com.fitted.cart.dto.CartListResponse;
 import com.fitted.cart.dto.CartRequest;
 import com.fitted.cart.dto.CartResponse;
 import com.fitted.cart.dto.CreateCartResponse;
@@ -16,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -89,11 +91,43 @@ public class CartService {
         );
     }
 
-    public CartResponse findByCartId(Long cartId) {
+    public void checkUserWithCart(Cart cart, User user) {
+        if (!cart.getUserId().equals(user.getId())) {
+            throw new IllegalArgumentException("사용자 정보와 일치하지 않습니다.");
+        }
+    }
+
+    public CartResponse findByCartId(String supabaseId, Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new NoSuchElementException("해당하는 장바구니가 없습니다."));
+        User user = userRepository.findBySupabaseId(supabaseId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 사용자가 없습니다"));
+        checkUserWithCart(cart, user);
         List<CartItem> cartItems = cartItemRepository.findAllByCartId(cartId);
         List<CartItemResponse> cartItemResponses = convertCartResponseList(cartItems);
         return convertCartResponse(cart, cartItemResponses);
+    }
+
+    public CartListResponse findAll(String supabaseId) {
+        User user = userRepository.findBySupabaseId(supabaseId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 사용자가 없습니다."));
+        List<Cart> carts = cartRepository.findByUserId(user.getId());
+        List<CartResponse> cartResponses = new ArrayList<>();
+        for (Cart cart : carts) {
+            List<CartItemResponse> cartItemResponses = cartItemRepository.findAllByCartId(cart.getId()).stream()
+                    .map(cartItem -> new CartItemResponse(
+                            cartItem.getId(),
+                            cartItem.getProductId(),
+                            cartItem.getProductOptionId(),
+                            cartItem.getProductCount()
+                    ))
+                    .toList();
+            CartResponse cartResponse = new CartResponse(
+                    cart.getId(),
+                    cartItemResponses
+            );
+            cartResponses.add(cartResponse);
+        }
+        return new CartListResponse(cartResponses);
     }
 }

@@ -20,10 +20,12 @@ public class CartRestController {
     }
 
     @GetMapping("/carts/{cartId}")
-    public CartResponse findByCartId(@PathVariable Long cartId) {
-        return cartService.findByCartId(cartId);
+    public CartResponse findByCartId(@LoginMemberId String supabaseId, @PathVariable Long cartId) {
+        return cartService.findByCartId(supabaseId, cartId);
     }
 
-//    @GetMapping("/carts")
-//    public CartListResponse findAll()
+    @GetMapping("/carts")
+    public CartListResponse findAll(@LoginMemberId String supabaseId) {
+        return cartService.findAll(supabaseId);
+    }
 }
