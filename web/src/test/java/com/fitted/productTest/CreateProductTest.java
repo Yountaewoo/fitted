@@ -27,7 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+class CreateProductTest {
 
     @Mock
     AuthorizationService authorizationService;
