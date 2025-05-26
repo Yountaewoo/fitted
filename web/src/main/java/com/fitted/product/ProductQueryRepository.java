@@ -21,7 +21,7 @@ public class ProductQueryRepository {
         this.queryFactory = queryFactory;
     }
 
-    List<Product> findAll(String productName, String category, SortType sortType, Pageable pageable) {
+    public List<Product> findAll(String productName, String category, SortType sortType, Pageable pageable) {
         OrderSpecifier<?> order = getOrderSpecifier(sortType);
         return queryFactory
                 .selectFrom(product)
