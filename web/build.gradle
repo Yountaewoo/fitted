@@ -1,7 +1,14 @@
 plugins {
-    id 'org.springframework.boot'
+    // 스프링 부트 플러그인만 제거
+    id 'java-library'
     id 'io.spring.dependency-management'
-    id 'java'
+}
+
+dependencyManagement {
+    imports {
+        // Spring Boot BOM 을 불러와서 버전을 통일 관리
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
 }
 
 dependencies {
